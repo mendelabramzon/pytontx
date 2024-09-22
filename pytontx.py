@@ -7,6 +7,41 @@ import json
 provider = LiteBalancer.from_mainnet_config(4)
 await provider.start_up()
 
+
+def jetton_transfer_notif(slice):
+    result = {}
+
+    # Check and skip 64 bits for the query_id
+    if len(slice.bits) >= 64:
+        slice.skip_bits(64)
+        result['query'] = 'skipped 64 bits'
+    else:
+        result['query'] = 'not enough bits to skip 64'
+
+    # Check and load coins (jetton amount)
+    if len(slice.bits) > 0:
+        jetton_amount = slice.load_coins() / 1e9
+        result['jetton_amount'] = jetton_amount
+    else:
+        result['jetton_amount'] = 'not enough bits to load jetton amount'
+
+    # Check and load sender address
+    if len(slice.bits) > 0:
+        jetton_sender = slice.load_address().to_str(1, 1, 1)
+        result['jetton_sender'] = jetton_sender
+    else:
+        result['jetton_sender'] = 'not enough bits to load jetton sender'
+
+    # Check for and load forward payload
+    if len(slice.bits) > 0 and slice.load_bit():
+        forward_payload = slice.load_ref().begin_parse()
+    else:
+        forward_payload = slice
+    result['forward_payload'] = forward_payload
+    
+    return result
+    
+
 def unroll_cell(cell):
     results = []
     slice = cell.begin_parse()
