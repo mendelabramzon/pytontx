@@ -4,8 +4,14 @@ from pytoniq_core import Slice, Cell, boc, MessageAny, Transaction, TransactionE
 import json
 
 
-provider = LiteBalancer.from_mainnet_config(4)
+n = 2
+k = 5
+address = ''
+
+provider = LiteBalancer.from_mainnet_config(n)
 await provider.start_up()
+
+txs = await provider.get_transactions(address, k) # get transactions for wallet
 
 
 def jetton_transfer_notif(slice):
