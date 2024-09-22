@@ -1,9 +1,7 @@
 from pytoniq import Address, begin_cell, LiteBalancer, WalletV4R2, LiteClient
-import asyncio
 from pytoniq import Contract
 from pytoniq_core import Slice, Cell, boc, MessageAny, Transaction, TransactionError, TvmBitarray
 import json
-import pandas as pd
 
 
 provider = LiteBalancer.from_mainnet_config(4)
