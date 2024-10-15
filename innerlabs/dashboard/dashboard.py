@@ -6,7 +6,10 @@ from dash import html, dash_table, dcc
 from dash.dependencies import Input, Output
 import datetime
 
-# Load tickers from pairs_data.json
+# User-defined parameter: Number of top tickers to process
+TOP_N_TICKERS = 10  # You can adjust this number as needed
+
+# Load tickers and volumes from pairs_data.json
 try:
     with open('pairs_data.json', 'r') as f:
         data = json.load(f)
@@ -14,15 +17,27 @@ except FileNotFoundError:
     print("Error: 'pairs_data.json' not found.")
     exit()
 
-# Extract the list of tickers from the 'data' key
+# Extract the list of tickers and their volumes from the 'data' key
 try:
-    tickers = [item['name'] for item in data['data']]
-    tickers = tickers[:20]  # Limit to first 5 tickers
+    pairs = data['data']
 except KeyError:
     print("Error: Incorrect structure in 'pairs_data.json'. Expected key 'data'.")
     exit()
 
-print(f"Tickers loaded: {tickers}")
+# Create a list of dictionaries with 'name' and 'volume'
+tickers_with_volume = []
+for item in pairs:
+    ticker_name = item.get('name')
+    volume = item.get('quoteVolume24h', 0)  # Use 0 if 'quoteVolume24h' is missing
+    tickers_with_volume.append({'name': ticker_name, 'volume': volume})
+
+# Sort the tickers by volume in descending order
+sorted_tickers = sorted(tickers_with_volume, key=lambda x: x['volume'], reverse=True)
+
+# Select the top N tickers
+top_tickers = [item['name'] for item in sorted_tickers[:TOP_N_TICKERS]]
+
+print(f"Top {TOP_N_TICKERS} tickers by volume: {top_tickers}")
 
 # Initialize the Dash app
 app = dash.Dash(__name__)
@@ -60,7 +75,7 @@ app.layout = html.Div([
 def update_table(n):
     print("Update table called")
     all_trades = []
-    for ticker in tickers:
+    for ticker in top_tickers:
         url = f"https://trade.ton-rocket.com/trades/last/{ticker}?limit=100"
         print(f"Fetching data for {ticker}")
         try:
@@ -77,9 +92,15 @@ def update_table(n):
                         trade_data['side'] = trade.get('side')
                         if 'orderTime' in trade:
                             # Parse orderTime from ISO 8601 format
-                            trade_data['timestamp'] = datetime.datetime.strptime(
-                                trade['orderTime'], '%Y-%m-%dT%H:%M:%S.%fZ'
-                            ).strftime('%Y-%m-%d %H:%M:%S')
+                            try:
+                                trade_data['timestamp'] = datetime.datetime.strptime(
+                                    trade['orderTime'], '%Y-%m-%dT%H:%M:%S.%fZ'
+                                ).strftime('%Y-%m-%d %H:%M:%S')
+                            except ValueError:
+                                # Handle cases where microseconds are missing
+                                trade_data['timestamp'] = datetime.datetime.strptime(
+                                    trade['orderTime'], '%Y-%m-%dT%H:%M:%S.%fZ'
+                                ).strftime('%Y-%m-%d %H:%M:%S')
                         else:
                             trade_data['timestamp'] = ''
                         all_trades.append(trade_data)
