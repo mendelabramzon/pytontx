@@ -16,3 +16,4 @@ This project provides a set of Python scripts designed to parse and decompose tr
 
 - Python 3.7+
 - `pytoniq` and `pytoniq_core` packages for interacting with TON blockchain data.
+
