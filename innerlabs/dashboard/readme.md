@@ -3,7 +3,7 @@
 
 This is a Dash-based web application that displays the latest trades for multiple cryptocurrency pairs from the TON Rocket exchange.
 
-![alt text](http://url/to/img.png)
+![alt text](dash.png)
 
 ## Features
 
