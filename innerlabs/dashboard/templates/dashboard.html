@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Interacting Wallets for {{ contract_address }}</h1>
+
+<h2>Wallets</h2>
+<table>
+    <tr>
+        <th>Wallet Address</th>
+        <th>Incoming Interactions</th>
+        <th>Outgoing Interactions</th>
+    </tr>
+    {% for wallet, interactions in wallets.items() %}
+    <tr>
+        <td>{{ wallet }}</td>
+        <td>{{ interactions.in }}</td>
+        <td>{{ interactions.out }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2>Transaction Details</h2>
+<table>
+    <tr>
+        <th>Direction</th>
+        <th>Address</th>
+        <th>Data</th>
+    </tr>
+    {% for tx in transaction_details %}
+    <tr>
+        <td>{{ tx.direction }}</td>
+        <td>{{ tx.address }}</td>
+        <td>
+            <pre>{{ tx.data | tojson(indent=2) }}</pre>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

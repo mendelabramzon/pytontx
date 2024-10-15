@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Blockchain Dashboard</h1>
+<form action="/dashboard" method="post">
+    <label for="contract_address">Enter the contract address:</label>
+    <input type="text" id="contract_address" name="contract_address" required>
+    <button type="submit">Submit</button>
+</form>
+{% endblock %}
