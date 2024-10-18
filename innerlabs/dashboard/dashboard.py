@@ -7,7 +7,7 @@ from dash.dependencies import Input, Output
 import datetime
 
 # User-defined parameter: Number of top tickers to process
-TOP_N_TICKERS = 10  # You can adjust this number as needed
+TOP_N_TICKERS = 91  # You can adjust this number as needed
 
 # Load tickers and volumes from pairs_data.json
 try:
@@ -33,6 +33,7 @@ for item in pairs:
 
 # Sort the tickers by volume in descending order
 sorted_tickers = sorted(tickers_with_volume, key=lambda x: x['volume'], reverse=True)
+print(len(sorted_tickers))
 
 # Select the top N tickers
 top_tickers = [item['name'] for item in sorted_tickers[:TOP_N_TICKERS]]
