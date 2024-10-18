@@ -1,9 +1,9 @@
-Certainly! I'll create a README.md file for the dashboard application you've shared. Here's a suggested content for the README:
 
-```markdown:README.md
 # Latest Trades Dashboard
 
 This is a Dash-based web application that displays the latest trades for multiple cryptocurrency pairs from the TON Rocket exchange.
+
+![alt text](dash.png)
 
 ## Features
 
